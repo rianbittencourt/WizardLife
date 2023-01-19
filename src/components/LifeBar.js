@@ -1,0 +1,35 @@
+import React, { useState } from "react";
+import { View, Text } from "react-native";
+import ProgressBar from "react-native-progress/Bar";
+import LifeIcon from "../imgs/LifeIcon";
+
+const LifeBar = ({ currentLife, maxLife }) => {
+  const progress = currentLife / maxLife;
+
+  return (
+    <View
+      className="bg-[#261C18] flex-row p-1  items-center justify-center px-3 my-1"
+      borderRadius={50}
+    >
+      <View className="right-1">
+        <LifeIcon></LifeIcon>
+      </View>
+      <View
+        className="bg-[#635050] items-center justify-center flex-row"
+        borderRadius={12}
+      >
+        <ProgressBar
+  
+          progress={progress}
+          width={150}
+          height={10}
+          color="#CE1D1C"
+          borderRadius={12}
+          borderColor={"transparent"}
+        ></ProgressBar>
+      </View>
+    </View>
+  );
+};
+
+export default LifeBar;
