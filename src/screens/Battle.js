@@ -26,6 +26,8 @@ export function Battle() {
   const character = route.params.character;
   const [battleResult, setBattleResult] = useState(null);
   const [battleWinner, setBattleWinner] = useState(null);
+  const [currentLife, setCurrentLife] = useState(character.result.health);
+  const [battleFinish, setBattleFinish] = useState(false);
 
   const battleStart = async () => {
     try {
@@ -54,24 +56,31 @@ export function Battle() {
     }
   };
 
-  function teste() {
-    console.log(
-      battleResult.result.result.battleResult.winner == character.result.name
-    );
-  }
-
   useEffect(() => {
-    if(!battleResult) return;
+    if (!battleResult) return;
     setTimeout(() => {
-      if (battleResult.result.result.battleResult.winner == character.result.name) {
-        console.log("Você Ganhou");
+      if (
+        battleResult.result.result.battleResult.winner == character.result.name
+      ) {
         setBattleWinner(true);
+        console.log("Você Ganhou");
+
+        setCurrentLife(battleResult.result.result.battleResult.characterHealth);
       } else {
         console.log("Você Perdeu");
         setBattleWinner(false);
+
+        setCurrentLife(battleResult.result.result.battleResult.characterHealth);
       }
-    }, 2000); // delay of 2 seconds
+    }, 2000);
   }, [battleResult]);
+
+  function showResult(){
+    setBattleFinish(true);
+    setBattleWinner(null);
+    setBattleResult(null);
+    console.log(battleWinner, battleFinish)
+  }
 
   return (
     <ImageBackground
@@ -86,7 +95,7 @@ export function Battle() {
               SmookeHD (5)
             </Text>
             <LifeBar
-              currentLife={character.result.health}
+              currentLife={currentLife}
               maxLife={character.result.totalHealth}
             ></LifeBar>
             <ManaBar currentMana={100} maxMana={100}></ManaBar>
@@ -110,10 +119,6 @@ export function Battle() {
               animation="zoomInRight"
               className="block absolute  bottom-0 right-0 my-5 mx-5"
             >
-              <TouchableOpacity
-                className=" py-5 px-20 justify-center rounded-xl bg-[#83726C] "
-                onPress={() => console.log(battleResult.result.result.battleResult.monster.health)}
-              ></TouchableOpacity>
               <Text className="text-2xl text-[#CE1D1C] font-bold text-right">
                 {battleResult.result.result.battleResult.monster.name}(
                 {battleResult.result.result.battleResult.monster.level})
@@ -123,25 +128,74 @@ export function Battle() {
             </Animatable.View>
           )}
 
-
           {battleWinner === true && (
-            <View
-              
-              className="block absolute  bottom-0 right-0 my-5 mx-5"
-            >
+            <React.Fragment>
+              <View className="flex-1 items-center justify-center align-center">
               <TouchableOpacity
-                className=" py-5 px-20 justify-center rounded-xl bg-[#83726C] "
-                onPress={() => console.log("teste ", battleResult.result.result.battleResult.monsterHealth)}
-              ></TouchableOpacity>
-              <Text className="text-2xl text-[#CE1D1C] font-bold text-right">
-                {battleResult.result.result.battleResult.monster.name}(
-                {battleResult.result.result.battleResult.monster.level})
-              </Text>
-              <LifeBar currentLife={battleResult.result.result.battleResult.monsterHealth} maxLife={battleResult.result.result.battleResult.monster.health}></LifeBar>
-              <ManaBar currentMana={100} maxMana={100}></ManaBar>
-            </View>
+                onPress={showResult}>
+                <Text className="text-4xl text-center text-green-500">
+                  You Won
+                </Text>
+                </TouchableOpacity>
+              </View>
+              <View className="absolute  bottom-0 right-0 my-5 mx-5 ">
+                <Text className="text-2xl text-[#CE1D1C] font-bold text-right">
+                  {battleResult.result.result.battleResult.monster.name}(
+                  {battleResult.result.result.battleResult.monster.level})
+                </Text>
+                <LifeBar
+                  currentLife={
+                    battleResult.result.result.battleResult.monsterHealth
+                  }
+                  maxLife={
+                    battleResult.result.result.battleResult.monster.health
+                  }
+                ></LifeBar>
+                <ManaBar currentMana={100} maxMana={100}></ManaBar>
+              </View>
+            </React.Fragment>
           )}
 
+          {battleWinner == false && (
+            <React.Fragment>
+              <View className="flex-1 items-center justify-center align-center">
+                <TouchableOpacity
+                onPress={showResult}>
+                <Text className="text-4xl text-center text-red-500">
+                  You Loss
+                </Text>
+                </TouchableOpacity>
+              </View>
+              <View className="absolute  bottom-0 right-0 my-5 mx-5 ">
+                <Text className="text-2xl text-[#CE1D1C] font-bold text-right">
+                  {battleResult.result.result.battleResult.monster.name}(
+                  {battleResult.result.result.battleResult.monster.level})
+                </Text>
+                <LifeBar
+                  currentLife={
+                    battleResult.result.result.battleResult.monsterHealth
+                  }
+                  maxLife={
+                    battleResult.result.result.battleResult.monster.health
+                  }
+                ></LifeBar>
+                <ManaBar currentMana={100} maxMana={100}></ManaBar>
+              </View>
+            </React.Fragment>
+          )}
+
+{battleFinish == true && (
+            
+              <View className="flex-1 items-center justify-center align-center">
+                <Text className="text-4xl text-center text-red-500">
+                  Finish Battle
+                </Text>
+              </View>
+             
+            
+          )}
+           
+           
 
         </View>
       </View>
